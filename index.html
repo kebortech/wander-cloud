@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="WanderCloud - Discover extraordinary journeys, curated travel experiences, and seamless booking for adventurers worldwide.">
+    <meta name="theme-color" content="#0f172a">
+    <title>WanderCloud | Travel Beyond Boundaries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Playfair+Display:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Scroll Progress Indicator -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Background Textures & Gradients -->
+    <div class="bg-gradient"></div>
+    <div class="bg-orb-1"></div>
+    <div class="bg-orb-2"></div>
+    <div class="bg-grid"></div>
+
+    <!-- Blog Article Modal -->
+    <div class="blog-article-overlay" id="blogArticleOverlay">
+        <div class="blog-article-container glass-panel">
+            <button class="blog-article-close" id="closeBlogArticle">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="blog-article-scroll" id="blogArticleContent">
+                <!-- Content loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Cookie Consent Banner -->
+    <div class="cookie-banner glass-panel" id="cookieBanner">
+        <div class="cookie-content">
+            <div class="cookie-icon"><i class="fas fa-cookie-bite"></i></div>
+            <div class="cookie-text">
+                <strong>We use cookies</strong>
+                <p>We use cookies to enhance your travel planning experience. By continuing, you agree to our cookie policy.</p>
+            </div>
+        </div>
+        <div class="cookie-actions">
+            <button class="btn btn-ghost btn-sm" id="cookieSettings">Settings</button>
+            <button class="btn btn-primary btn-sm" id="acceptCookies">Accept All</button>
+        </div>
+    </div>
+
+    <!-- Live Chat Widget -->
+    <div class="chat-widget" id="chatWidget">
+        <button class="chat-toggle glass-panel" id="chatToggle" aria-label="Open chat">
+            <i class="fas fa-comment-dots"></i>
+            <span class="chat-badge">1</span>
+        </button>
+        <div class="chat-panel glass-panel" id="chatPanel">
+            <div class="chat-header">
+                <div class="chat-agent">
+                    <div class="chat-avatar gradient-2">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <div>
+                        <strong>Sarah - Travel Expert</strong>
+                        <span>Online • Typically replies in 2 min</span>
+                    </div>
+                </div>
+                <div class="chat-header-actions">
+                    <button class="chat-action-btn" title="Minimize"><i class="fas fa-minus"></i></button>
+                    <button class="chat-action-btn" id="closeChat" title="Close"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-msg agent">
+                    <div class="chat-msg-avatar gradient-2"><i class="fas fa-headset"></i></div>
+                    <div class="chat-msg-bubble">
+                        👋 Hi! I'm Sarah, your travel concierge. Where would you like to explore today?
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" placeholder="Type your message..." id="chatInput">
+                <button class="btn btn-primary btn-sm" id="sendMessage">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Floating Bar -->
+    <div class="quick-actions">
+        <button class="quick-action-btn glass-panel" title="Scroll to Top" id="scrollTopBtn">
+            <i class="fas fa-arrow-up"></i>
+            <span class="quick-action-tooltip">Back to Top</span>
+        </button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">
+                <div class="logo-icon"><i class="fas fa-globe-americas"></i></div>
+                <span>Wander<span class="gradient-text">Cloud</span></span>
+            </a>
+            
+            <div class="nav-links desktop-only">
+                <a href="#destinations">Destinations</a>
+                <a href="#deals">Deals</a>
+                <a href="#experiences">Experiences</a>
+                <a href="#packages">Packages</a>
+                <a href="#blog">Blog</a>
+                <a href="#testimonials">Reviews</a>
+                <a href="#faq">FAQ</a>
+            </div>
+
+            <div class="nav-controls">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="#" class="btn btn-ghost desktop-only" id="signInBtn">Sign In</a>
+                <a href="#" class="btn btn-primary desktop-only" id="registerBtn">Register</a>
+                <a href="#booking" class="btn btn-primary desktop-only">Book Now</a>
+                <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#destinations">Destinations</a>
+            <a href="#deals">Deals</a>
+            <a href="#experiences">Experiences</a>
+            <a href="#packages">Packages</a>
+            <a href="#blog">Blog</a>
+            <a href="#testimonials">Reviews</a>
+            <a href="#faq">FAQ</a>
+            <div class="mobile-menu-actions">
+                <a href="#" class="btn btn-ghost btn-block" id="mobileSignInBtn">Sign In</a>
+                <a href="#" class="btn btn-primary btn-block" id="mobileRegisterBtn">Register</a>
+                <a href="#booking" class="btn btn-primary btn-block">Book Now</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="badge-pulse"></span>
+                    <span>✨ New: AI Travel Planner & Real-Time Availability</span>
+                </div>
+                <h1 class="hero-title">
+                    Explore The World,<br>
+                    <span class="gradient-text">Effortlessly.</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Discover 10,000+ curated destinations, book flights & stays, and get personalized itineraries powered by intelligent travel planning.
+                </p>
+                
+                <!-- Quick Search Widget -->
+                <div class="search-widget glass-panel">
+                    <div class="search-tabs">
+                        <button class="search-tab active">Flights + Hotel</button>
+                        <button class="search-tab">Flights</button>
+                        <button class="search-tab">Hotels</button>
+                        <button class="search-tab">Tours</button>
+                    </div>
+                    <div class="search-form">
+                        <div class="search-field">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <input type="text" placeholder="Where from?">
+                        </div>
+                        <div class="search-field">
+                            <i class="fas fa-plane-arrival"></i>
+                            <input type="text" placeholder="Where to?">
+                        </div>
+                        <div class="search-field">
+                            <i class="fas fa-calendar-alt"></i>
+                            <input type="text" placeholder="Check-in" class="date-picker">
+                        </div>
+                        <div class="search-field">
+                            <i class="fas fa-calendar-check"></i>
+                            <input type="text" placeholder="Check-out" class="date-picker">
+                        </div>
+                        <div class="search-field">
+                            <i class="fas fa-user"></i>
+                            <select class="guest-select">
+                                <option>1 Guest</option>
+                                <option>2 Guests</option>
+                                <option>3 Guests</option>
+                                <option>4+ Guests</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary search-submit">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <strong>10K+</strong>
+                        <span>Destinations</span>
+                    </div>
+                    <div class="stat-item">
+                        <strong>500K+</strong>
+                        <span>Happy Travelers</span>
+                    </div>
+                    <div class="stat-item">
+                        <strong>4.9</strong>
+                        <span>Average Rating</span>
+                    </div>
+                    <div class="stat-item">
+                        <strong>24/7</strong>
+                        <span>Support</span>
+                    </div>
+                </div>
+
+                <div class="trust-badges">
+                    <span>Featured in leading travel publications</span>
+                    <div class="badge-row">
+                        <span class="trust-badge"><i class="fas fa-newspaper"></i> NatGeo Travel</span>
+                        <span class="trust-badge"><i class="fas fa-globe"></i> Lonely Planet</span>
+                        <span class="trust-badge"><i class="fas fa-plane"></i> Travel+Leisure</span>
+                        <span class="trust-badge"><i class="fas fa-award"></i> Condé Nast</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <!-- Live Dashboard Mockup -->
+                <div class="library-mockup glass-panel">
+                    <div class="mockup-header">
+                        <div class="mockup-dots"><span></span><span></span><span></span></div>
+                        <span class="mockup-title">Live Dashboard</span>
+                        <div class="live-indicator">
+                            <span class="live-dot"></span> Live
+                        </div>
+                    </div>
+                    <div class="mockup-body">
+                        <div class="mockup-sidebar">
+                            <div class="sidebar-item active"><i class="fas fa-home"></i> <span class="sidebar-text">Home</span></div>
+                            <div class="sidebar-item"><i class="fas fa-suitcase"></i> <span class="sidebar-text">My Trips</span></div>
+                            <div class="sidebar-item"><i class="fas fa-tag"></i> <span class="sidebar-text">Deals</span></div>
+                            <div class="sidebar-item"><i class="fas fa-heart"></i> <span class="sidebar-text">Saved</span></div>
+                            <div class="sidebar-item"><i class="fas fa-history"></i> <span class="sidebar-text">History</span></div>
+                        </div>
+                        <div class="mockup-main">
+                            <div class="currently-reading">
+                                <span class="label">Upcoming Adventure</span>
+                                <div class="book-preview">
+                                    <div class="book-cover gradient-1">
+                                        <i class="fas fa-umbrella-beach"></i>
+                                    </div>
+                                    <div class="book-info">
+                                        <strong>Bali, Indonesia</strong>
+                                        <div class="trip-details">
+                                            <span><i class="fas fa-calendar"></i> Jun 15-23, 2026</span>
+                                            <span><i class="fas fa-user-friends"></i> 2 Adults</span>
+                                        </div>
+                                        <div class="progress-bar"><div class="progress" style="width: 68%"></div></div>
+                                        <span class="progress-text">12 days until departure • 8-day trip</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="recommended-grid">
+                                <div class="rec-card">
+                                    <div class="book-cover gradient-2"><i class="fas fa-mountain"></i></div>
+                                    <span>Swiss Alps</span>
+                                    <small class="deal-tag">-30%</small>
+                                </div>
+                                <div class="rec-card">
+                                    <div class="book-cover gradient-3"><i class="fas fa-city"></i></div>
+                                    <span>Tokyo, Japan</span>
+                                </div>
+                                <div class="rec-card">
+                                    <div class="book-cover gradient-4"><i class="fas fa-water"></i></div>
+                                    <span>Santorini, Greece</span>
+                                    <small class="deal-tag">Hot Deal</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="floating-elements">
+                    <div class="float-card glass-panel"><i class="fas fa-route"></i> Custom Itineraries</div>
+                    <div class="float-card glass-panel"><i class="fas fa-shield-alt"></i> Travel Insurance</div>
+                    <div class="float-card glass-panel"><i class="fas fa-headset"></i> 24/7 Support</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Destinations Bento Grid -->
+    <section id="destinations" class="collections section-reveal">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Popular Destinations</span>
+                <h2 class="section-title">Explore <span class="gradient-text">Paradise</span></h2>
+                <p class="section-subtitle">Curated destinations for every type of traveler, from beach lovers to mountain explorers.</p>
+            </div>
+            
+            <div class="bento-grid">
+                <div class="bento-item large">
+                    <div class="bento-content">
+                        <h3>Tropical Escapes</h3>
+                        <p>Maldives, Bali, Seychelles — pristine beaches & luxury resorts.</p>
+                        <span class="bento-tag">2,500+ Properties</span>
+                    </div>
+                    <div class="bento-bg gradient-1"></div>
+                </div>
+                <div class="bento-item">
+                    <div class="bento-content">
+                        <h3>European Heritage</h3>
+                        <p>Explore ancient cities, museums & world-renowned cuisine.</p>
+                        <span class="bento-tag">1,800+ Tours</span>
+                    </div>
+                    <div class="bento-bg gradient-2"></div>
+                </div>
+                <div class="bento-item">
+                    <div class="bento-content">
+                        <h3>Asian Wonders</h3>
+                        <p>Ancient temples, futuristic cities & breathtaking landscapes.</p>
+                        <span class="bento-tag">3,200+ Destinations</span>
+                    </div>
+                    <div class="bento-bg gradient-3"></div>
+                </div>
+                <div class="bento-item wide">
+                    <div class="bento-content">
+                        <h3>Adventure & Safari</h3>
+                        <p>African safaris, Amazon treks & Arctic expeditions.</p>
+                        <span class="bento-tag">950+ Expeditions</span>
+                    </div>
+                    <div class="bento-bg gradient-4"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Flash Deals Section -->
+    <section id="deals" class="deals section-reveal">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Limited Time</span>
+                <h2 class="section-title">Flash <span class="gradient-text">Deals</span></h2>
+                <p class="section-subtitle">Grab these exclusive offers before they're gone!</p>
+            </div>
+            
+            <div class="deals-carousel">
+                <div class="deal-card glass-panel deal-featured">
+                    <div class="deal-badge">🔥 Trending</div>
+                    <div class="deal-header">
+                        <h3>Bali Luxury Retreat</h3>
+                        <div class="deal-rating">
+                            <span>★★★★★</span>
+                            <span>4.9 (234 reviews)</span>
+                        </div>
+                    </div>
+                    <div class="deal-price-row">
+                        <div class="deal-price">
+                            <span class="old-price">$2,499</span>
+                            <span class="new-price">$1,699</span>
+                            <span class="discount-badge">-32%</span>
+                        </div>
+                        <span class="deal-period">per person / 7 nights</span>
+                    </div>
+                    <div class="deal-includes">
+                        <span><i class="fas fa-plane"></i> Flights</span>
+                        <span><i class="fas fa-hotel"></i> 5★ Resort</span>
+                        <span><i class="fas fa-utensils"></i> Breakfast</span>
+                        <span><i class="fas fa-spa"></i> Spa</span>
+                    </div>
+                    <div class="deal-timer">
+                        <i class="fas fa-clock"></i>
+                        <span>Ends in: </span>
+                        <span class="countdown" data-hours="12">12h 34m 56s</span>
+                    </div>
+                    <a href="#booking" class="btn btn-primary btn-block">Book Now</a>
+                </div>
+
+                <div class="deal-card glass-panel">
+                    <div class="deal-header">
+                        <h3>Tokyo City Explorer</h3>
+                        <div class="deal-rating">
+                            <span>★★★★☆</span>
+                            <span>4.7 (186 reviews)</span>
+                        </div>
+                    </div>
+                    <div class="deal-price-row">
+                        <div class="deal-price">
+                            <span class="old-price">$1,899</span>
+                            <span class="new-price">$1,299</span>
+                            <span class="discount-badge">-31%</span>
+                        </div>
+                        <span class="deal-period">per person / 5 nights</span>
+                    </div>
+                    <div class="deal-includes">
+                        <span><i class="fas fa-plane"></i> Flights</span>
+                        <span><i class="fas fa-hotel"></i> 4★ Hotel</span>
+                        <span><i class="fas fa-subway"></i> Rail Pass</span>
+                    </div>
+                    <div class="deal-timer">
+                        <i class="fas fa-clock"></i>
+                        <span>Ends in: </span>
+                        <span class="countdown" data-hours="8">8h 15m 42s</span>
+                    </div>
+                    <a href="#booking" class="btn btn-secondary btn-block">View Deal</a>
+                </div>
+
+                <div class="deal-card glass-panel">
+                    <div class="deal-header">
+                        <h3>Santorini Dream</h3>
+                        <div class="deal-rating">
+                            <span>★★★★★</span>
+                            <span>4.8 (312 reviews)</span>
+                        </div>
+                    </div>
+                    <div class="deal-price-row">
+                        <div class="deal-price">
+                            <span class="old-price">$2,199</span>
+                            <span class="new-price">$1,549</span>
+                            <span class="discount-badge">-29%</span>
+                        </div>
+                        <span class="deal-period">per person / 6 nights</span>
+                    </div>
+                    <div class="deal-includes">
+                        <span><i class="fas fa-plane"></i> Flights</span>
+                        <span><i class="fas fa-hotel"></i> Cave Hotel</span>
+                        <span><i class="fas fa-ship"></i> Cruise</span>
+                    </div>
+                    <div class="deal-timer">
+                        <i class="fas fa-clock"></i>
+                        <span>Ends in: </span>
+                        <span class="countdown" data-hours="24">24h 0m 0s</span>
+                    </div>
+                    <a href="#booking" class="btn btn-secondary btn-block">View Deal</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Travel Blog Section -->
+    <section id="blog" class="blog section-reveal">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Travel Blog</span>
+                <h2 class="section-title">Travel <span class="gradient-text">Stories & Tips</span></h2>
+                <p class="section-subtitle">Get inspired by travel guides, tips, and stories from fellow adventurers.</p>
+            </div>
+            
+            <div class="blog-grid">
+                <article class="blog-card glass-panel" data-blog-id="1">
+                    <div class="blog-image gradient-1">
+                        <i class="fas fa-hiking"></i>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-category"><i class="fas fa-tag"></i> Adventure</div>
+                        <h3>Top 10 Hiking Trails in Patagonia</h3>
+                        <p>Discover the most breathtaking routes through South America's wilderness paradise. From glaciers to mountain peaks...</p>
+                        <div class="blog-meta">
+                            <span><i class="fas fa-user"></i> Maria Santos</span>
+                            <span><i class="fas fa-calendar"></i> May 5, 2026</span>
+                            <span class="blog-stats"><i class="fas fa-heart"></i> <span class="like-count">342</span></span>
+                            <span class="blog-stats"><i class="fas fa-comment"></i> <span class="comment-count">56</span></span>
+                        </div>
+                        <button class="btn btn-secondary btn-sm read-more-btn" data-blog-id="1">
+                            Read More <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </article>
+                <article class="blog-card glass-panel" data-blog-id="2">
+                    <div class="blog-image gradient-2">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-category"><i class="fas fa-tag"></i> Food & Culture</div>
+                        <h3>Street Food Guide: Bangkok</h3>
+                        <p>Navigate the vibrant street food scene of Thailand's capital like a local. From pad thai to mango sticky rice...</p>
+                        <div class="blog-meta">
+                            <span><i class="fas fa-user"></i> Chef Andrew</span>
+                            <span><i class="fas fa-calendar"></i> May 3, 2026</span>
+                            <span class="blog-stats"><i class="fas fa-heart"></i> <span class="like-count">289</span></span>
+                            <span class="blog-stats"><i class="fas fa-comment"></i> <span class="comment-count">43</span></span>
+                        </div>
+                        <button class="btn btn-secondary btn-sm read-more-btn" data-blog-id="2">
+                            Read More <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </article>
+                <article class="blog-card glass-panel" data-blog-id="3">
+                    <div class="blog-image gradient-3">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-category"><i class="fas fa-tag"></i> Photography</div>
+                        <h3>Capturing the Northern Lights</h3>
+                        <p>Expert tips for photographing the Aurora Borealis in Iceland and Norway. Best locations, camera settings, and timing...</p>
+                        <div class="blog-meta">
+                            <span><i class="fas fa-user"></i> James Wilson</span>
+                            <span><i class="fas fa-calendar"></i> Apr 28, 2026</span>
+                            <span class="blog-stats"><i class="fas fa-heart"></i> <span class="like-count">427</span></span>
+                            <span class="blog-stats"><i class="fas fa-comment"></i> <span class="comment-count">72</span></span>
+                        </div>
+                        <button class="btn btn-secondary btn-sm read-more-btn" data-blog-id="3">
+                            Read More <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </article>
+            </div>
+            <div class="blog-cta">
+                <a href="#" class="btn btn-secondary">View All Stories <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experiences Section -->
+    <section id="experiences" class="features section-reveal">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Why WanderCloud</span>
+                <h2 class="section-title">Travel <span class="gradient-text">Smarter</span></h2>
+                <p class="section-subtitle">Everything you need for seamless, memorable journeys worldwide.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card glass-panel">
+                    <div class="feature-icon"><i class="fas fa-robot"></i></div>
+                    <h3>AI Trip Planner</h3>
+                    <p>Smart algorithms create personalized itineraries based on your preferences, budget, and travel style.</p>
+                    <a href="#" class="feature-link">Try it free <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="feature-card glass-panel">
+                    <div class="feature-icon"><i class="fas fa-ticket-alt"></i></div>
+                    <h3>Instant Booking</h3>
+                    <p>Book flights, hotels, and experiences in one place with real-time availability and confirmation.</p>
+                    <a href="#" class="feature-link">Book now <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="feature-card glass-panel">
+                    <div class="feature-icon"><i class="fas fa-users"></i></div>
+                    <h3>Group Adventures</h3>
+                    <p>Create group trips, split costs, and coordinate itineraries with built-in collaboration tools.</p>
+                    <a href="#" class="feature-link">Plan group trip <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="feature-card glass-panel">
+                    <div class="feature-icon"><i class="fas fa-language"></i></div>
+                    <h3>Local Guides</h3>
+                    <p>Connect with 5,000+ verified local guides who speak 40+ languages for authentic experiences.</p>
+                    <a href="#" class="feature-link">Find guides <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="feature-card glass-panel">
+                    <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>Price Predictions</h3>
+                    <p>AI-powered price forecasting tells you the best time to book for maximum savings.</p>
+                    <a href="#" class="feature-link">Learn more <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="feature-card glass-panel">
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Travel Insurance</h3>
+                    <p>Comprehensive coverage for medical emergencies, cancellations, and lost baggage.</p>
+                    <a href="#" class="feature-link">Get quote <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="testimonials section-reveal">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Testimonials</span>
+                <h2 class="section-title">Loved by <span class="gradient-text">Travelers Worldwide</span></h2>
+                <p class="section-subtitle">Join 500,000+ adventurers creating unforgettable memories.</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card glass-panel">
+                    <div class="stars">★★★★★</div>
+                    <p>"WanderCloud planned our entire honeymoon — flights, 5-star resorts, private tours. Saved us 40+ hours of research and the AI recommendations were spot-on!"</p>
+                    <div class="author">
+                        <div class="author-img">ER</div>
+                        <div>
+                            <strong>Emily & Robert Chen</strong>
+                            <span>Honeymoon in Bali & Maldives</span>
+                            <span class="verified"><i class="fas fa-check-circle"></i> Verified Traveler</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card glass-panel">
+                    <div class="stars">★★★★★</div>
+                    <p>"As a solo traveler, safety and local connections matter. WanderCloud connected me with amazing guides and fellow travelers. Best trip of my life!"</p>
+                    <div class="author">
+                        <div class="author-img">MC</div>
+                        <div>
+                            <strong>Maria Santos</strong>
+                            <span>Solo Adventure, Southeast Asia</span>
+                            <span class="verified"><i class="fas fa-check-circle"></i> Verified Traveler</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card glass-panel">
+                    <div class="stars">★★★★★</div>
+                    <p>"Our corporate retreat planning used to take months. WanderCloud handled 200+ people across 4 destinations with seamless logistics. Incredible platform."</p>
+                    <div class="author">
+                        <div class="author-img">SA</div>
+                        <div>
+                            <strong>Sarah Johnson</strong>
+                            <span>VP Operations, TechVentures Inc.</span>
+                            <span class="verified"><i class="fas fa-check-circle"></i> Corporate Client</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Traveler Stats Counter -->
+    <section class="stats-counter section-reveal">
+        <div class="container">
+            <div class="counter-grid">
+                <div class="counter-item glass-panel">
+                    <i class="fas fa-globe-americas gradient-text"></i>
+                    <span class="counter-number" data-target="10000">0</span>
+                    <span class="counter-label">Destinations</span>
+                </div>
+                <div class="counter-item glass-panel">
+                    <i class="fas fa-smile gradient-text"></i>
+                    <span class="counter-number" data-target="500000">0</span>
+                    <span class="counter-label">Happy Travelers</span>
+                </div>
+                <div class="counter-item glass-panel">
+                    <i class="fas fa-building gradient-text"></i>
+                    <span class="counter-number" data-target="2500">0</span>
+                    <span class="counter-label">Hotel Partners</span>
+                </div>
+                <div class="counter-item glass-panel">
+                    <i class="fas fa-plane-departure gradient-text"></i>
+                    <span class="counter-number" data-target="150">0</span>
+                    <span class="counter-label">Countries</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Packages / Pricing -->
+    <section id="packages" class="pricing section-reveal">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Travel Packages</span>
+                <h2 class="section-title">Curated <span class="gradient-text">Experiences</span></h2>
+                <p class="section-subtitle">Pre-planned packages or custom itineraries. Cancel anytime up to 48 hours before.</p>
+            </div>
+            
+            <div class="pricing-toggle">
+                <span class="toggle-label active">Per Person</span>
+                <label class="switch">
+                    <input type="checkbox" id="pricingToggle">
+                    <span class="slider"></span>
+                </label>
+                <span class="toggle-label">Group <span class="save-tag">Save 15%</span></span>
+            </div>
+
+            <div class="pricing-grid">
+                <div class="pricing-card glass-panel">
+                    <div class="pricing-header">
+                        <h3>Explorer</h3>
+                        <p>For solo adventurers & couples</p>
+                    </div>
+                    <div class="price">
+                        <span class="currency">$</span>
+                        <span class="amount" data-monthly="899" data-yearly="764">899</span>
+                        <span class="period">/person</span>
+                    </div>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check-circle"></i> 5-day itinerary</li>
+                        <li><i class="fas fa-check-circle"></i> 3-star accommodations</li>
+                        <li><i class="fas fa-check-circle"></i> Guided city tours</li>
+                        <li><i class="fas fa-check-circle"></i> Travel insurance basic</li>
+                    </ul>
+                    <a href="#booking" class="btn btn-secondary btn-block">Start Planning</a>
+                </div>
+
+                <div class="pricing-card glass-panel popular">
+                    <div class="popular-badge">Most Popular</div>
+                    <div class="pricing-header">
+                        <h3>Adventurer</h3>
+                        <p>For families & friend groups</p>
+                    </div>
+                    <div class="price">
+                        <span class="currency">$</span>
+                        <span class="amount" data-monthly="1499" data-yearly="1274">1,499</span>
+                        <span class="period">/person</span>
+                    </div>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check-circle"></i> Everything in Explorer</li>
+                        <li><i class="fas fa-check-circle"></i> 4-star luxury stays</li>
+                        <li><i class="fas fa-check-circle"></i> Custom itinerary design</li>
+                        <li><i class="fas fa-check-circle"></i> Airport transfers</li>
+                        <li><i class="fas fa-check-circle"></i> Premium travel insurance</li>
+                    </ul>
+                    <a href="#booking" class="btn btn-primary btn-block">Start Planning</a>
+                </div>
+
+                <div class="pricing-card glass-panel">
+                    <div class="pricing-header">
+                        <h3>Concierge</h3>
+                        <p>For luxury travelers & VIP experiences</p>
+                    </div>
+                    <div class="price">
+                        <span class="amount" style="font-size: 2rem;">Custom Quote</span>
+                    </div>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check-circle"></i> Unlimited destinations</li>
+                        <li><i class="fas fa-check-circle"></i> 5-star luxury resorts</li>
+                        <li><i class="fas fa-check-circle"></i> Private jet & yacht options</li>
+                        <li><i class="fas fa-check-circle"></i> Personal travel concierge</li>
+                        <li><i class="fas fa-check-circle"></i> Exclusive experiences</li>
+                    </ul>
+                    <a href="#booking" class="btn btn-secondary btn-block">Contact Concierge</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="faq section-reveal">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">FAQ</span>
+                <h2 class="section-title">Frequently Asked <span class="gradient-text">Questions</span></h2>
+            </div>
+            <div class="faq-list">
+                <div class="faq-item glass-panel">
+                    <button class="faq-question">
+                        <span>How does the AI trip planner work?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Our AI analyzes your preferences, past trips, budget, and travel dates to create personalized itineraries. It considers factors like weather, local events, and crowd levels to optimize your experience.</p>
+                    </div>
+                </div>
+                <div class="faq-item glass-panel">
+                    <button class="faq-question">
+                        <span>Can I modify or cancel my booking?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes! Most bookings can be modified or cancelled up to 48 hours before departure with full refund. Premium packages offer even more flexible terms.</p>
+                    </div>
+                </div>
+                <div class="faq-item glass-panel">
+                    <button class="faq-question">
+                        <span>Is my payment information secure?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Absolutely. We use PCI DSS Level 1 compliant payment processing with bank-grade encryption. Your data is protected with the same security standards as major financial institutions.</p>
+                    </div>
+                </div>
+                <div class="faq-item glass-panel">
+                    <button class="faq-question">
+                        <span>Do you offer travel insurance?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes! All packages include basic travel insurance. Premium packages include comprehensive coverage for medical emergencies, trip cancellations, and lost baggage.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Subscription -->
+    <section class="newsletter section-reveal">
+        <div class="container">
+            <div class="newsletter-card glass-panel">
+                <div class="newsletter-content">
+                    <div class="newsletter-icon gradient-1">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <div class="newsletter-text">
+                        <h2>Get Travel Deals & Inspiration</h2>
+                        <p>Subscribe to our newsletter and never miss exclusive deals, travel tips, and destination guides.</p>
+                    </div>
+                </div>
+                <form class="newsletter-form" id="newsletterForm">
+                    <div class="newsletter-input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" placeholder="Enter your email" required>
+                        <button type="submit" class="btn btn-primary">Subscribe</button>
+                    </div>
+                    <div class="newsletter-consent">
+                        <label class="checkbox-label">
+                            <input type="checkbox" required>
+                            <span>I agree to receive travel deals and updates. <a href="#">Privacy Policy</a></span>
+                        </label>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta section-reveal">
+        <div class="container">
+            <div class="cta-card glass-panel">
+                <h2>Ready to Explore the World?</h2>
+                <p>Join 500,000+ travelers discovering extraordinary destinations with WanderCloud.</p>
+                <div class="cta-actions">
+                    <a href="#booking" class="btn btn-primary btn-large">Start Your Journey</a>
+                    <a href="#booking" class="btn btn-ghost btn-large"><i class="fas fa-play"></i> Watch Demo</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section id="booking" class="contact section-reveal">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-form glass-panel">
+                    <h3>Plan Your Dream Trip</h3>
+                    <p>Our travel experts will create a personalized itinerary within 24 hours.</p>
+                    <form id="contactForm" onsubmit="handleBookingSubmit(event)">
+                        <input type="hidden" id="bookingDestination" value="">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" placeholder="Jane Doe" required id="fullName">
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" placeholder="you@email.com" required id="email">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" placeholder="+1 (555) 000-0000" id="phone">
+                            </div>
+                            <div class="form-group">
+                                <label>Preferred Contact Method</label>
+                                <select id="contactMethod">
+                                    <option>Email</option>
+                                    <option>Phone</option>
+                                    <option>WhatsApp</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Dream Destination</label>
+                            <input type="text" placeholder="Where would you like to go?" required id="destination">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Travelers</label>
+                                <select required id="travelers">
+                                    <option value="">Select group size...</option>
+                                    <option>Solo traveler</option>
+                                    <option>Couple</option>
+                                    <option>Family (3-5)</option>
+                                    <option>Group (6+)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Budget Range</label>
+                                <select id="budget">
+                                    <option>Budget ($500-$1,000)</option>
+                                    <option>Standard ($1,000-$3,000)</option>
+                                    <option>Premium ($3,000-$7,000)</option>
+                                    <option>Luxury ($7,000+)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Travel Dates (Approximate)</label>
+                            <textarea rows="4" placeholder="Tell us about your preferred dates, budget range, and any special requirements..." id="notes"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-gradient">
+                            <i class="fas fa-credit-card"></i> Proceed to Payment
+                        </button>
+                    </form>
+                </div>
+                <div class="contact-info glass-panel">
+                    <h3>Why WanderCloud?</h3>
+                    <p>Curated experiences with end-to-end travel planning and 24/7 concierge support.</p>
+                    <div class="info-list">
+                        <div class="info-item">
+                            <div class="info-icon"><i class="fas fa-envelope"></i></div>
+                            <div><strong>Email</strong><span>travel@wandercloud.com</span></div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon"><i class="fas fa-phone"></i></div>
+                            <div><strong>24/7 Support</strong><span>+1 (888) 999-8888</span></div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <div><strong>Offices</strong><span>New York, London, Singapore & Dubai</span></div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon"><i class="fas fa-clock"></i></div>
+                            <div><strong>Response Time</strong><span>Within 2 hours</span></div>
+                        </div>
+                    </div>
+                    <div class="cert-badges">
+                        <div class="cert"><i class="fas fa-shield-alt"></i> IATA Certified</div>
+                        <div class="cert"><i class="fas fa-lock"></i> PCI DSS</div>
+                        <div class="cert"><i class="fas fa-check-circle"></i> ATOL Protected</div>
+                        <div class="cert"><i class="fas fa-star"></i> 4.9 Rating</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="nav-logo">
+                        <div class="logo-icon"><i class="fas fa-globe-americas"></i></div>
+                        <span>Wander<span class="gradient-text">Cloud</span></span>
+                    </a>
+                    <p>Discover extraordinary journeys, curated travel experiences, and seamless booking for adventurers worldwide.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Destinations</h4>
+                    <a href="#destinations">Popular Cities</a>
+                    <a href="#destinations">Beach Resorts</a>
+                    <a href="#destinations">Mountain Retreats</a>
+                    <a href="#destinations">Heritage Tours</a>
+                    <a href="#destinations">Island Getaways</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <a href="#">About Us</a>
+                    <a href="#">Careers</a>
+                    <a href="#blog">Travel Blog</a>
+                    <a href="#">Press & Media</a>
+                    <a href="#booking">Contact</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <a href="#">Help Center</a>
+                    <a href="#">Travel Insurance</a>
+                    <a href="#">Cancellation Policy</a>
+                    <a href="#">Travel Advisories</a>
+                    <a href="#">Loyalty Program</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 WanderCloud Inc. All rights reserved. <a href="#">Privacy</a> • <a href="#">Terms</a> • <a href="#">Cookie Policy</a> • <a href="#">Sitemap</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <div class="bottom-nav-container">
+            <a href="#home" class="bottom-nav-item active" data-section="home">
+                <div class="nav-icon"><i class="fas fa-home"></i></div>
+                <span>Home</span>
+            </a>
+            <a href="#deals" class="bottom-nav-item" data-section="deals">
+                <div class="nav-icon"><i class="fas fa-fire"></i></div>
+                <span>Deals</span>
+            </a>
+            <a href="#destinations" class="bottom-nav-item" data-section="destinations">
+                <div class="nav-icon"><i class="fas fa-map-marked-alt"></i></div>
+                <span>Explore</span>
+            </a>
+            <a href="#packages" class="bottom-nav-item" data-section="packages">
+                <div class="nav-icon"><i class="fas fa-tags"></i></div>
+                <span>Packages</span>
+            </a>
+            <a href="#booking" class="bottom-nav-item" data-section="booking">
+                <div class="nav-icon"><i class="fas fa-envelope"></i></div>
+                <span>Book</span>
+            </a>
+        </div>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="script.js"></script>
+</body>
+</html>

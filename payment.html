@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Complete Payment | WanderCloud</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Playfair+Display:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Payment Page Specific Styles */
+        .payment-container {
+            max-width: 800px;
+            margin: 120px auto 60px;
+            padding: 0 20px;
+        }
+        
+        .payment-steps {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .payment-step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        
+        .payment-step.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .payment-step.completed {
+            color: #10b981;
+        }
+        
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--border);
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+        
+        .payment-step.active .step-number {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+        
+        .payment-step.completed .step-number {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+        
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .payment-method-card {
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .payment-method-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .payment-method-card.selected {
+            border-color: var(--primary);
+            background: rgba(6, 182, 212, 0.1);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+        }
+        
+        .payment-method-card .method-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .payment-method-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+            color: var(--text-primary);
+        }
+        
+        .payment-method-card p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .selected-check {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+        
+        .payment-method-card.selected .selected-check {
+            display: flex;
+        }
+        
+        .account-details {
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .account-detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .account-detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .account-detail-row strong {
+            color: var(--text-primary);
+        }
+        
+        .account-detail-row span {
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .copy-btn {
+            padding: 4px 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-family: inherit;
+            transition: var(--transition);
+            margin-left: 8px;
+        }
+        
+        .copy-btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        .booking-summary {
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+        
+        .summary-row.total {
+            border-bottom: none;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            padding-top: 1rem;
+        }
+        
+        .timer-container {
+            text-align: center;
+            padding: 1rem;
+            margin: 1rem 0;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: var(--radius-sm);
+        }
+        
+        .timer {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #f59e0b;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+        }
+        
+        .transaction-input {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            text-align: center;
+            transition: var(--transition);
+        }
+        
+        .transaction-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+        }
+        
+        .payment-status {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+        
+        .status-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .status-pending { color: #f59e0b; }
+        .status-approved { color: #10b981; }
+        .status-rejected { color: #ef4444; }
+        
+        .booking-details-card {
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+        
+        .booking-details-card p {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .booking-details-card strong {
+            color: var(--text-primary);
+        }
+        
+        .confirmation-code {
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            padding: 1rem;
+            background: rgba(6, 182, 212, 0.1);
+            border-radius: var(--radius-sm);
+            margin: 1rem 0;
+            word-break: break-all;
+        }
+        
+        .nav-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 clamp(16px, 5vw, 24px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-logo {
+            font-size: clamp(1.25rem, 3vw, 1.5rem);
+            font-weight: 800;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .section-header h2 {
+            color: var(--text-primary);
+        }
+        
+        .section-header p {
+            color: var(--text-secondary);
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: inherit;
+            resize: vertical;
+            transition: var(--transition);
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .form-group label {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .form-group small {
+            color: var(--text-secondary);
+        }
+        
+        @media (max-width: 768px) {
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+            .payment-steps {
+                gap: 1rem;
+            }
+            .payment-step {
+                font-size: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .payment-container {
+                margin: 100px auto 40px;
+            }
+            .payment-steps {
+                gap: 0.5rem;
+            }
+            .step-number {
+                width: 24px;
+                height: 24px;
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Effects (same as main site) -->
+    <div class="bg-gradient"></div>
+    <div class="bg-orb-1"></div>
+    <div class="bg-orb-2"></div>
+    <div class="bg-grid"></div>
+
+    <!-- Navigation (same style as main site) -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <div class="logo-icon"><i class="fas fa-globe-americas"></i></div>
+                <span>Wander<span class="gradient-text">Cloud</span></span>
+            </a>
+            <div class="nav-controls">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="index.html" class="btn btn-ghost btn-sm">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="payment-container">
+        <!-- Payment Steps Indicator -->
+        <div class="payment-steps" id="paymentSteps">
+            <div class="payment-step active" id="step1">
+                <span class="step-number">1</span>
+                <span>Select Method</span>
+            </div>
+            <div class="payment-step" id="step2">
+                <span class="step-number">2</span>
+                <span>Make Payment</span>
+            </div>
+            <div class="payment-step" id="step3">
+                <span class="step-number">3</span>
+                <span>Submit Reference</span>
+            </div>
+            <div class="payment-step" id="step4">
+                <span class="step-number">4</span>
+                <span>Confirmation</span>
+            </div>
+        </div>
+
+        <!-- Step 1: Select Payment Method -->
+        <div id="paymentStep1">
+            <div class="section-header">
+                <h2>Select Payment Method</h2>
+                <p>Choose your preferred payment method to complete your booking</p>
+            </div>
+
+            <div class="booking-summary glass-panel" id="bookingSummary">
+                <!-- Filled dynamically -->
+            </div>
+
+            <div class="payment-methods">
+                <div class="payment-method-card glass-panel" data-method="cbe" onclick="selectPaymentMethod('cbe')">
+                    <div class="selected-check"><i class="fas fa-check"></i></div>
+                    <div class="method-icon">🏦</div>
+                    <h4>CBE</h4>
+                    <p>Commercial Bank of Ethiopia<br>Bank Transfer</p>
+                </div>
+                <div class="payment-method-card glass-panel" data-method="telebirr" onclick="selectPaymentMethod('telebirr')">
+                    <div class="selected-check"><i class="fas fa-check"></i></div>
+                    <div class="method-icon">📱</div>
+                    <h4>Telebirr</h4>
+                    <p>Ethio Telecom<br>Mobile Money Transfer</p>
+                </div>
+                <div class="payment-method-card glass-panel" data-method="ebirr" onclick="selectPaymentMethod('ebirr')">
+                    <div class="selected-check"><i class="fas fa-check"></i></div>
+                    <div class="method-icon">💳</div>
+                    <h4>E-Birr</h4>
+                    <p>Mobile Banking<br>Digital Payment Service</p>
+                </div>
+            </div>
+
+            <button class="btn btn-gradient" style="width:100%;margin-top:1rem;" id="continueToPayment" disabled onclick="goToStep2()">
+                Continue to Payment Details <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- Step 2: Payment Details -->
+        <div id="paymentStep2" style="display:none;">
+            <div class="section-header">
+                <h2>Complete Your Payment</h2>
+                <p>Transfer the exact amount using the details below</p>
+            </div>
+
+            <div class="account-details glass-panel" id="accountDetails">
+                <!-- Filled dynamically -->
+            </div>
+
+            <div class="timer-container">
+                <p style="margin-bottom:0.5rem;color:#f59e0b;">⏰ Complete your payment within</p>
+                <div class="timer" id="paymentTimer">30:00</div>
+            </div>
+
+            <button class="btn btn-gradient" style="width:100%;margin-top:1rem;" onclick="goToStep3()">
+                I've Made the Payment - Enter Reference <i class="fas fa-arrow-right"></i>
+            </button>
+            <button class="btn btn-ghost" style="width:100%;margin-top:0.5rem;" onclick="goToStep1()">
+                <i class="fas fa-arrow-left"></i> Change Payment Method
+            </button>
+        </div>
+
+        <!-- Step 3: Submit Transaction Reference -->
+        <div id="paymentStep3" style="display:none;">
+            <div class="section-header">
+                <h2>Submit Transaction Reference</h2>
+                <p>Enter the transaction/reference number from your payment</p>
+            </div>
+
+            <div class="glass-panel" style="padding:2rem;">
+                <div class="form-group">
+                    <label style="display:block;margin-bottom:0.75rem;font-weight:600;">
+                        <i class="fas fa-receipt"></i> Transaction / Reference Number *
+                    </label>
+                    <input type="text" class="transaction-input" id="transactionNumber" 
+                           placeholder="e.g., CBE123456789 or FT2026ABCD" maxlength="50">
+                    <small style="display:block;margin-top:0.5rem;">
+                        Enter the reference number from your bank receipt or mobile money confirmation SMS
+                    </small>
+                </div>
+                <div class="form-group" style="margin-top:1rem;">
+                    <label style="display:block;margin-bottom:0.75rem;font-weight:600;">
+                        <i class="fas fa-phone"></i> Payer Phone Number (optional)
+                    </label>
+                    <input type="tel" class="transaction-input" id="payerPhone" 
+                           placeholder="+251 9XX XXX XXXX">
+                </div>
+                <div class="form-group" style="margin-top:1rem;">
+                    <label style="display:block;margin-bottom:0.75rem;font-weight:600;">
+                        <i class="fas fa-comment"></i> Additional Notes (optional)
+                    </label>
+                    <textarea id="paymentNotes" rows="3" placeholder="Any additional information about your payment..."></textarea>
+                </div>
+            </div>
+
+            <button class="btn btn-gradient" style="width:100%;margin-top:1rem;" onclick="submitPayment()">
+                <i class="fas fa-paper-plane"></i> Submit Payment for Verification
+            </button>
+            <button class="btn btn-ghost" style="width:100%;margin-top:0.5rem;" onclick="goToStep2()">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+        </div>
+
+        <!-- Step 4: Confirmation -->
+        <div id="paymentStep4" style="display:none;">
+            <div class="payment-status" id="paymentStatus">
+                <!-- Filled dynamically -->
+            </div>
+            <div style="text-align:center;margin-top:1rem;display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
+                <a href="index.html" class="btn btn-primary btn-large">
+                    <i class="fas fa-home"></i> Back to Home
+                </a>
+                <button class="btn btn-ghost btn-large" onclick="checkBookingStatus()">
+                    <i class="fas fa-sync"></i> Refresh Status
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="payment.js"></script>
+</body>
+</html>

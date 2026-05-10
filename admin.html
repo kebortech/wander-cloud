@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="WanderCloud Admin Dashboard - Manage your travel platform">
+    <meta name="theme-color" content="#0b1120">
+    <title>WanderCloud | Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Playfair+Display:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="admin-loading" id="adminLoading">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading dashboard...</p>
+        </div>
+    </div>
+
+    <!-- Background Effects -->
+    <div class="bg-gradient"></div>
+    <div class="bg-orb-1"></div>
+    <div class="bg-orb-2"></div>
+    <div class="bg-grid"></div>
+
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="admin-logo">
+                <div class="logo-icon"><i class="fas fa-globe-americas"></i></div>
+                <span>Wander<span class="gradient-text">Cloud</span></span>
+            </a>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <span class="nav-section-title">Main Menu</span>
+                <a href="#dashboard" class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#bookings" class="nav-item" data-section="bookings">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Bookings</span>
+                    <span class="nav-badge" id="bookingCount">0</span>
+                </a>
+                <a href="#users" class="nav-item" data-section="users">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                    <span class="nav-badge" id="userCount">0</span>
+                </a>
+                <a href="#destinations" class="nav-item" data-section="destinations">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <span>Destinations</span>
+                </a>
+                <a href="#packages" class="nav-item" data-section="packages">
+                    <i class="fas fa-suitcase"></i>
+                    <span>Packages</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <span class="nav-section-title">Management</span>
+                <a href="#analytics" class="nav-item" data-section="analytics">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="#reviews" class="nav-item" data-section="reviews">
+                    <i class="fas fa-star"></i>
+                    <span>Reviews</span>
+                    <span class="nav-badge" id="reviewPendingCount">0</span>
+                </a>
+                <a href="#blog-manage" class="nav-item" data-section="blog-manage">
+                    <i class="fas fa-blog"></i>
+                    <span>Blog</span>
+                </a>
+                <a href="#settings" class="nav-item" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile">
+                <div class="admin-avatar gradient-1" id="adminInitials">SA</div>
+                <div class="admin-info">
+                    <strong id="adminName">Sarah Admin</strong>
+                    <span id="adminRole">Super Admin</span>
+                </div>
+            </div>
+            <div class="sidebar-actions">
+                <a href="index.html" class="btn btn-ghost btn-sm">
+                    <i class="fas fa-external-link-alt"></i> View Site
+                </a>
+                <button class="btn btn-ghost btn-sm" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Admin Overlay for Mobile -->
+    <div class="admin-overlay" id="adminOverlay"></div>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <!-- Top Bar -->
+        <header class="admin-topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search across all sections..." id="globalSearch">
+                </div>
+            </div>
+            
+            <div class="topbar-right">
+                <button class="topbar-btn notification-btn" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-dot" id="notificationDot"></span>
+                </button>
+                <button class="topbar-btn" title="Messages">
+                    <i class="fas fa-envelope"></i>
+                    <span class="badge-count" id="messageCount">0</span>
+                </button>
+                <div class="theme-toggle-wrapper">
+                    <button class="theme-toggle" id="adminThemeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content Area -->
+        <div class="admin-content" id="adminContent">
+            <!-- Dashboard Overview Section -->
+            <section id="dashboard-section" class="admin-section active">
+                <div class="section-header">
+                    <div>
+                        <h2>Dashboard Overview</h2>
+                        <p>Welcome back, <span id="welcomeName">Admin</span>! Here's what's happening today.</p>
+                    </div>
+                    <div class="date-filter">
+                        <button class="btn btn-ghost btn-sm date-range-btn">
+                            <i class="fas fa-calendar"></i> <span id="dateRangeText">Last 30 Days</span>
+                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="exportDashboardData()">
+                            <i class="fas fa-download"></i> Export Report
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card glass-panel">
+                        <div class="stat-icon gradient-1">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total Revenue</span>
+                            <h3 class="stat-value" id="totalRevenue">$0</h3>
+                            <span class="stat-change positive" id="revenueChange">
+                                <i class="fas fa-arrow-up"></i> 0% vs last month
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card glass-panel">
+                        <div class="stat-icon gradient-2">
+                            <i class="fas fa-plane-departure"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total Bookings</span>
+                            <h3 class="stat-value" id="totalBookings">0</h3>
+                            <span class="stat-change positive" id="bookingsChange">
+                                <i class="fas fa-arrow-up"></i> 0% vs last month
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card glass-panel">
+                        <div class="stat-icon gradient-3">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total Users</span>
+                            <h3 class="stat-value" id="totalUsers">0</h3>
+                            <span class="stat-change positive" id="usersChange">
+                                <i class="fas fa-arrow-up"></i> 0% vs last month
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card glass-panel">
+                        <div class="stat-icon gradient-4">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Avg Rating</span>
+                            <h3 class="stat-value" id="avgRating">0.0</h3>
+                            <span class="stat-change positive">
+                                <i class="fas fa-arrow-up"></i> Excellent
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Grid -->
+                <div class="charts-grid">
+                    <div class="chart-card glass-panel">
+                        <div class="chart-header">
+                            <h3>Revenue Overview</h3>
+                            <select class="chart-filter" id="revenuePeriod">
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly" selected>Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                        <div class="chart-placeholder">
+                            <canvas id="revenueCanvas"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card glass-panel">
+                        <div class="chart-header">
+                            <h3>Booking Trends</h3>
+                            <select class="chart-filter" id="bookingPeriod">
+                                <option value="7">Last 7 Days</option>
+                                <option value="30" selected>Last 30 Days</option>
+                            </select>
+                        </div>
+                        <div class="chart-placeholder">
+                            <canvas id="bookingCanvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Bookings Table -->
+                <div class="table-card glass-panel">
+                    <div class="table-header">
+                        <h3>Recent Bookings</h3>
+                        <a href="#bookings" class="btn btn-ghost btn-sm view-all-btn">View All</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Customer</th>
+                                    <th>Destination</th>
+                                    <th>Package</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentBookingsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bookings Section -->
+            <section id="bookings-section" class="admin-section">
+                <div class="section-header">
+                    <div>
+                        <h2>Booking Management</h2>
+                        <p>Manage all customer bookings and reservations</p>
+                    </div>
+                    <div class="section-actions">
+                        <select class="filter-select" id="bookingStatusFilter">
+                            <option value="all">All Bookings</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="pending">Pending</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                        <input type="text" class="filter-input" id="bookingSearch" placeholder="Search bookings...">
+                        <button class="btn btn-primary" onclick="addNewBooking()">
+                            <i class="fas fa-plus"></i> New Booking
+                        </button>
+                    </div>
+                </div>
+                <div class="table-card glass-panel">
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Customer</th>
+                                    <th>Email</th>
+                                    <th>Destination</th>
+                                    <th>Package</th>
+                                    <th>Dates</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allBookingsTable"></tbody>
+                        </table>
+                    </div>
+                    <div class="pagination" id="bookingsPagination"></div>
+                </div>
+            </section>
+
+            <!-- Users Section -->
+            <section id="users-section" class="admin-section">
+                <div class="section-header">
+                    <div>
+                        <h2>User Management</h2>
+                        <p>Manage registered users and their permissions</p>
+                    </div>
+                    <div class="section-actions">
+                        <select class="filter-select" id="userStatusFilter">
+                            <option value="all">All Users</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                        <input type="text" class="filter-input" id="userSearch" placeholder="Search users...">
+                        <button class="btn btn-primary" onclick="addNewUser()">
+                            <i class="fas fa-plus"></i> Add User
+                        </button>
+                    </div>
+                </div>
+                <div class="table-card glass-panel">
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Role</th>
+                                    <th>Bookings</th>
+                                    <th>Status</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allUsersTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Destinations Section -->
+            <section id="destinations-section" class="admin-section">
+                <div class="section-header">
+                    <div>
+                        <h2>Destination Management</h2>
+                        <p>Manage travel destinations and properties</p>
+                    </div>
+                    <div class="section-actions">
+                        <input type="text" class="filter-input" id="destinationSearch" placeholder="Search destinations...">
+                        <button class="btn btn-primary" onclick="addNewDestination()">
+                            <i class="fas fa-plus"></i> Add Destination
+                        </button>
+                    </div>
+                </div>
+                <div class="cards-grid" id="destinationsGrid"></div>
+            </section>
+
+            <!-- Packages Section -->
+            <section id="packages-section" class="admin-section">
+                <div class="section-header">
+                    <div>
+                        <h2>Package Management</h2>
+                        <p>Manage travel packages and pricing</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="addNewPackage()">
+                        <i class="fas fa-plus"></i> Add Package
+                    </button>
+                </div>
+                <div class="table-card glass-panel">
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Package</th>
+                                    <th>Type</th>
+                                    <th>Price/Person</th>
+                                    <th>Group Price</th>
+                                    <th>Features</th>
+                                    <th>Bookings</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="packagesTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section id="analytics-section" class="admin-section">
+                <div class="section-header">
+                    <div>
+                        <h2>Analytics & Reports</h2>
+                        <p>Comprehensive analytics for your travel platform</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="exportAnalyticsReport()">
+                        <i class="fas fa-download"></i> Export Analytics
+                    </button>
+                </div>
+                <div class="charts-grid">
+                    <div class="chart-card glass-panel">
+                        <h3>Popular Destinations</h3>
+                        <div class="chart-placeholder">
+                            <canvas id="destinationChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card glass-panel">
+                        <h3>Package Performance</h3>
+                        <div class="chart-placeholder">
+                            <canvas id="packageChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card glass-panel">
+                        <h3>User Growth</h3>
+                        <div class="chart-placeholder">
+                            <canvas id="userGrowthChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card glass-panel">
+                        <h3>Revenue by Destination</h3>
+                        <div class="chart-placeholder">
+                            <canvas id="revenueByDestChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reviews Section -->
+            <section id="reviews-section" class="admin-section">
+                <div class="section-header">
+                    <div>
+                        <h2>Review Management</h2>
+                        <p>Manage customer reviews and ratings</p>
+                    </div>
+                    <div class="section-actions">
+                        <select class="filter-select" id="reviewStatusFilter">
+                            <option value="all">All Reviews</option>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="reviews-list" id="reviewsList"></div>
+            </section>
+
+            <!-- Blog Management Section -->
+            <section id="blog-manage-section" class="admin-section">
+                <div class="section-header">
+                    <div>
+                        <h2>Blog Management</h2>
+                        <p>Manage travel blog posts and articles</p>
+                    </div>
+                    <div class="section-actions">
+                        <select class="filter-select" id="blogStatusFilter">
+                            <option value="all">All Posts</option>
+                            <option value="published">Published</option>
+                            <option value="draft">Draft</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="addNewBlogPost()">
+                            <i class="fas fa-plus"></i> New Post
+                        </button>
+                    </div>
+                </div>
+                <div class="table-card glass-panel">
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Category</th>
+                                    <th>Likes</th>
+                                    <th>Comments</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="blogTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings-section" class="admin-section">
+                <div class="section-header">
+                    <h2>Settings</h2>
+                </div>
+                <div class="settings-grid">
+                    <div class="settings-card glass-panel">
+                        <h3><i class="fas fa-globe"></i> General Settings</h3>
+                        <form class="settings-form" id="generalSettingsForm">
+                            <div class="form-group">
+                                <label>Site Name</label>
+                                <input type="text" id="siteName" value="WanderCloud">
+                            </div>
+                            <div class="form-group">
+                                <label>Admin Email</label>
+                                <input type="email" id="adminEmail" value="admin@wandercloud.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Contact Phone</label>
+                                <input type="tel" id="contactPhone" value="+1 (888) 999-8888">
+                            </div>
+                            <div class="form-group">
+                                <label>Currency</label>
+                                <select id="currency">
+                                    <option value="USD">USD ($)</option>
+                                    <option value="EUR">EUR (€)</option>
+                                    <option value="GBP">GBP (£)</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                    <div class="settings-card glass-panel">
+                        <h3><i class="fas fa-shield-alt"></i> Security</h3>
+                        <form class="settings-form" id="securitySettingsForm">
+                            <div class="form-group">
+                                <label>Two-Factor Authentication</label>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="toggle2FA()">
+                                    <span id="twoFAStatus">Enable 2FA</span>
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <label>API Key</label>
+                                <input type="text" id="apiKey" value="wc_api_key_****" readonly>
+                                <button type="button" class="btn btn-ghost btn-sm" onclick="regenerateAPIKey()" style="margin-top: 0.5rem;">
+                                    <i class="fas fa-sync"></i> Regenerate
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <label>Session Timeout (minutes)</label>
+                                <input type="number" id="sessionTimeout" value="30" min="5" max="120">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update Security</button>
+                        </form>
+                    </div>
+                    <div class="settings-card glass-panel">
+                        <h3><i class="fas fa-bell"></i> Notification Settings</h3>
+                        <form class="settings-form" id="notificationSettingsForm">
+                            <div class="form-group checkbox-group">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" id="emailNotifications" checked>
+                                    <span>Email Notifications</span>
+                                </label>
+                            </div>
+                            <div class="form-group checkbox-group">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" id="bookingAlerts" checked>
+                                    <span>New Booking Alerts</span>
+                                </label>
+                            </div>
+                            <div class="form-group checkbox-group">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" id="reviewAlerts" checked>
+                                    <span>New Review Alerts</span>
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Preferences</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Quick Action Modal -->
+    <div class="modal-overlay" id="quickActionModal">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3 id="modalTitle">Quick Action</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3 id="confirmTitle">Confirm Action</h3>
+                <button class="modal-close" onclick="closeConfirmModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">Are you sure you want to proceed?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeConfirmModal()">Cancel</button>
+                <button class="btn btn-danger" id="confirmActionBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Dropdown -->
+    <div class="notifications-dropdown" id="notificationsDropdown">
+        <div class="notifications-header">
+            <h4>Notifications</h4>
+            <button class="btn btn-ghost btn-sm" onclick="markAllNotificationsRead()">Mark all read</button>
+        </div>
+        <div class="notifications-list" id="notificationsList"></div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
