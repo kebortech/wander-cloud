@@ -221,12 +221,24 @@ UserDB.init();
 // ==========================================
 let currentUser = null;
 
-function checkUserAuth() {
-    const session = localStorage.getItem('wandercloud_user_session') || sessionStorage.getItem('wandercloud_user_session');
-    if (session) {
-        const data = JSON.parse(session);
-        const user = UserDB.findById(data.userId);
-        if (user) { currentUser = user; updateUIForLoggedInUser(); return true; }
+async function checkUserAuth() {
+    const token = localStorage.getItem('wandercloud_access_token') || sessionStorage.getItem('wandercloud_access_token');
+    if (!token) {
+        return false;
+    }
+    
+    try {
+        const result = await apiGetSession();
+        if (result.user) {
+            const profileResult = await apiGetProfile();
+            currentUser = profileResult.profile;
+            updateUIForLoggedInUser();
+            return true;
+        }
+    } catch (error) {
+        console.error('[v0] Auth check error:', error);
+        localStorage.removeItem('wandercloud_access_token');
+        sessionStorage.removeItem('wandercloud_access_token');
     }
     return false;
 }
@@ -253,10 +265,14 @@ function registerUser(userData) {
     return result;
 }
 
-function logoutUser() {
+async function logoutUser() {
+    try {
+        await apiLogout();
+        console.log('[v0] Logout successful');
+    } catch (error) {
+        console.error('[v0] Logout error:', error);
+    }
     currentUser = null;
-    localStorage.removeItem('wandercloud_user_session');
-    sessionStorage.removeItem('wandercloud_user_session');
     updateUIForLoggedOutUser();
     showToast('You have been logged out.', 'info');
 }
@@ -443,30 +459,47 @@ function switchAuthTab(type) {
     const loginError = document.getElementById('loginError'); if (loginError) loginError.style.display = 'none';
 }
 
-function handleLogin(event) {
+async function handleLogin(event) {
     event.preventDefault();
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value;
-    const rememberMe = document.getElementById('rememberMe')?.checked || false;
-    const errorDiv = document.getElementById('loginError');
-    const errorMsg = document.getElementById('loginErrorMessage');
-    const submitBtn = document.querySelector('#loginForm button[type="submit"]');
-    const originalHTML = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...'; submitBtn.disabled = true;
     
-    setTimeout(() => {
-        if (authTab === 'admin') {
-            if (email === 'admin@wandercloud.com' && password === 'admin123') {
-                const admin = { id: 1, username: 'admin', email: 'admin@wandercloud.com', name: 'Sarah Admin', role: 'Super Admin', initials: 'SA', permissions: ['all'] };
-                const session = { user: admin, timestamp: Date.now() };
-                if (rememberMe) localStorage.setItem('wandercloud_admin_session', JSON.stringify(session));
-                else sessionStorage.setItem('wandercloud_admin_session', JSON.stringify(session));
-                showAuthMessage('success', 'Login successful! Redirecting to admin dashboard...');
-                setTimeout(() => { window.location.href = 'admin.html'; }, 1000);
-            } else {
-                showAuthError('Invalid admin credentials. Use admin@wandercloud.com / admin123');
-                submitBtn.innerHTML = originalHTML; submitBtn.disabled = false;
-            }
+    const loginForm = document.getElementById('loginForm');
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const rememberMe = document.getElementById('rememberMe').checked;
+    const loginError = document.getElementById('loginError');
+    const loginErrorMessage = document.getElementById('loginErrorMessage');
+    const submitBtn = loginForm.querySelector('button[type="submit"]');
+    
+    try {
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+        submitBtn.disabled = true;
+
+        // Call API login
+        const result = await apiLogin(email, password, rememberMe);
+        
+        console.log('[v0] Login successful:', result);
+        
+        // Fetch user profile
+        const profileResult = await apiGetProfile();
+        currentUser = profileResult.profile;
+        
+        loginError.style.display = 'none';
+        submitBtn.innerHTML = '<i class="fas fa-check"></i> Login Successful!';
+        submitBtn.style.background = '#10b981';
+        showToast('Welcome back! You have been logged in successfully.', 'success');
+        updateUIForLoggedInUser();
+        
+        setTimeout(() => { closeAuthModal(); }, 1500);
+    } catch (error) {
+        console.error('[v0] Login error:', error);
+        submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+        submitBtn.disabled = false;
+        submitBtn.style.background = '';
+        
+        loginError.style.display = 'flex';
+        loginErrorMessage.textContent = error.message || 'Login failed. Please try again.';
+    }
+}
         } else {
             const result = loginUser(email, password, rememberMe);
             if (result.success) {
@@ -480,31 +513,66 @@ function handleLogin(event) {
     }, 800);
 }
 
-function handleRegister(event) {
+async function handleRegister(event) {
     event.preventDefault();
-    const name = document.getElementById('regName').value.trim();
-    const email = document.getElementById('regEmail').value.trim();
-    const phone = document.getElementById('regPhone').value.trim();
-    const password = document.getElementById('regPassword').value;
-    const terms = document.getElementById('regTerms').checked;
-    const submitBtn = document.querySelector('#registerForm button[type="submit"]');
     
-    if (!terms) { showRegisterError('Please agree to the Terms of Service and Privacy Policy.'); return; }
-    if (password.length < 6) { showRegisterError('Password must be at least 6 characters long.'); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showRegisterError('Please enter a valid email address.'); return; }
+    const registerForm = document.getElementById('registerForm');
+    const name = document.getElementById('registerName').value;
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+    const confirmPassword = document.getElementById('registerConfirmPassword').value;
+    const registerError = document.getElementById('registerError');
+    const registerErrorMessage = document.getElementById('registerErrorMessage');
+    const submitBtn = registerForm.querySelector('button[type="submit"]');
     
-    const originalHTML = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...'; submitBtn.disabled = true;
+    if (!name || !email || !password) {
+        registerError.style.display = 'flex';
+        registerErrorMessage.textContent = 'Please fill in all required fields.';
+        return;
+    }
     
-    setTimeout(() => {
-        const result = registerUser({ name, email, phone, password });
-        if (result.success) {
-            showRegisterSuccess('Account created! Welcome, ' + name.split(' ')[0] + '!');
-            setTimeout(() => { closeAuthModal(); }, 1500);
-        } else {
-            showRegisterError(result.message);
-            submitBtn.innerHTML = originalHTML; submitBtn.disabled = false;
-        }
+    if (password !== confirmPassword) {
+        registerError.style.display = 'flex';
+        registerErrorMessage.textContent = 'Passwords do not match.';
+        return;
+    }
+    
+    if (password.length < 6) {
+        registerError.style.display = 'flex';
+        registerErrorMessage.textContent = 'Password must be at least 6 characters long.';
+        return;
+    }
+    
+    try {
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+        submitBtn.disabled = true;
+
+        // Call API signup
+        const result = await apiSignUp(email, password, name);
+        
+        console.log('[v0] Registration successful:', result);
+        
+        // Fetch user profile
+        const profileResult = await apiGetProfile();
+        currentUser = profileResult.profile;
+        
+        registerError.style.display = 'none';
+        submitBtn.innerHTML = '<i class="fas fa-check"></i> Registration Successful!';
+        submitBtn.style.background = '#10b981';
+        showToast('Welcome! Your account has been created successfully.', 'success');
+        updateUIForLoggedInUser();
+        
+        setTimeout(() => { closeAuthModal(); }, 1500);
+    } catch (error) {
+        console.error('[v0] Registration error:', error);
+        submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+        submitBtn.disabled = false;
+        submitBtn.style.background = '';
+        
+        registerError.style.display = 'flex';
+        registerErrorMessage.textContent = error.message || 'Registration failed. Please try again.';
+    }
+}
     }, 800);
 }
 
